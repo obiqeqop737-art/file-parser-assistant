@@ -77,6 +77,8 @@ export function FileUpload({ className }: FileUploadProps) {
     [handleFile]
   );
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+
   return (
     <div className={className}>
       <div
@@ -84,7 +86,7 @@ export function FileUpload({ className }: FileUploadProps) {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={cn(
-          'relative border-2 border-dashed rounded-2xl p-8 transition-all duration-300 cursor-pointer',
+          'relative border-2 border-dashed rounded-2xl p-6 md:p-8 transition-all duration-300 cursor-pointer',
           isDragging
             ? 'border-blue-500 bg-blue-500/10'
             : 'border-gray-300 bg-white/50 hover:border-blue-400 hover:bg-white/70',
@@ -100,23 +102,23 @@ export function FileUpload({ className }: FileUploadProps) {
 
         <div className="text-center">
           <div className={cn(
-            'w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center transition-colors',
+            'w-14 h-14 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 rounded-2xl flex items-center justify-center transition-colors',
             isDragging ? 'bg-blue-500/20' : 'bg-gray-100'
           )}>
             <Upload className={cn(
-              'h-8 w-8',
+              'h-7 w-7 md:h-8 md:w-8',
               isDragging ? 'text-blue-500' : 'text-gray-400'
             )} />
           </div>
 
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">
+          <h3 className="text-base md:text-lg font-semibold text-gray-700 mb-1 md:mb-2">
             {isDragging ? '松开上传文件' : '上传文件'}
           </h3>
-          <p className="text-sm text-gray-500 mb-4">
-            拖拽文件到此处，或点击选择文件
+          <p className="text-sm text-gray-500 mb-3 md:mb-4">
+            {isMobile ? '点击选择文件' : '拖拽文件到此处，或点击选择文件'}
           </p>
 
-          <div className="flex flex-wrap justify-center gap-2 text-xs text-gray-400">
+          <div className="flex flex-wrap justify-center gap-1.5 md:gap-2 text-xs text-gray-400">
             {SUPPORTED_EXTENSIONS.map((ext) => (
               <span
                 key={ext}
@@ -130,7 +132,7 @@ export function FileUpload({ className }: FileUploadProps) {
       </div>
 
       {error && (
-        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 animate-fade-in">
+        <div className="mt-4 p-3 md:p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 animate-fade-in">
           <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
           <div className="flex-1">
             <p className="text-sm text-red-700">{error}</p>
@@ -138,7 +140,7 @@ export function FileUpload({ className }: FileUploadProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-red-400 hover:text-red-600 hover:bg-red-50"
+            className="h-8 w-8 text-red-400 hover:text-red-600 hover:bg-red-50 shrink-0"
             onClick={() => setError(null)}
           >
             <X className="h-4 w-4" />

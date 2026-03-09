@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Plus, Edit2, Trash2, Check, X, Bot } from 'lucide-react';
+import { Plus, Edit2, Trash2, Check, X, Bot, Menu } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,7 +11,11 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
-export function StrategyManager() {
+interface StrategyManagerProps {
+  onMenuClick?: () => void;
+}
+
+export function StrategyManager({ onMenuClick }: StrategyManagerProps) {
   const {
     strategies,
     currentStrategy,
@@ -25,6 +29,8 @@ export function StrategyManager() {
   const [editingStrategy, setEditingStrategy] = useState<string | null>(null);
   const [newStrategy, setNewStrategy] = useState({ name: '', description: '', content: '' });
   const [editForm, setEditForm] = useState({ name: '', description: '', content: '' });
+
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
 
   const handleAddStrategy = () => {
     if (!newStrategy.name.trim() || !newStrategy.content.trim()) return;
@@ -53,21 +59,34 @@ export function StrategyManager() {
   };
 
   return (
-    <div className="h-full flex flex-col p-6">
+    <div className="h-full flex flex-col p-4 md:p-6">
       {/* 头部 */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-800">策略管理</h2>
-          <p className="text-gray-500 mt-1">管理您的文件解析策略</p>
+      <div className="flex items-center justify-between mb-4 md:mb-6">
+        <div className="flex items-center gap-3">
+          {isMobile && onMenuClick && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="shrink-0 h-9 w-9"
+              onClick={onMenuClick}
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          )}
+          <div>
+            <h2 className="text-lg md:text-2xl font-bold text-gray-800">策略管理</h2>
+            <p className="text-gray-500 text-sm mt-0.5 md:mt-1 hidden sm:block">管理您的文件解析策略</p>
+          </div>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="glass-button">
-              <Plus className="h-4 w-4 mr-2" />
-              新建策略
+            <Button className="glass-button text-sm h-9 md:h-10 md:text-base">
+              <Plus className="h-4 w-4 mr-1 md:mr-2" />
+              <span className="hidden sm:inline">新建策略</span>
+              <span className="sm:hidden">新建</span>
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-2xl">
+          <DialogContent className="w-[95vw] max-w-lg sm:max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>创建新策略</DialogTitle>
               <DialogDescription>
@@ -97,15 +116,15 @@ export function StrategyManager() {
                   value={newStrategy.content}
                   onChange={(e) => setNewStrategy({ ...newStrategy, content: e.target.value })}
                   placeholder="输入 AI 的系统提示词..."
-                  className="min-h-[200px]"
+                  className="min-h-[150px] md:min-h-[200px]"
                 />
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="ghost" onClick={() => setIsAddDialogOpen(false)}>
+            <DialogFooter className="flex-row gap-2 justify-end">
+              <Button variant="ghost" onClick={() => setIsAddDialogOpen(false)} className="text-sm">
                 取消
               </Button>
-              <Button className="glass-button" onClick={handleAddStrategy}>
+              <Button className="glass-button text-sm" onClick={handleAddStrategy}>
                 创建
               </Button>
             </DialogFooter>
@@ -115,7 +134,7 @@ export function StrategyManager() {
 
       {/* 策略列表 */}
       <ScrollArea className="flex-1 -mx-2 px-2">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {strategies.map((strategy) => (
             <Card
               key={strategy.id}
@@ -128,62 +147,62 @@ export function StrategyManager() {
               )}
               onClick={() => selectStrategy(strategy)}
             >
-              <CardHeader className="pb-3">
+              <CardHeader className="pb-2 md:pb-3">
                 <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
                     <div className={cn(
-                      'w-8 h-8 rounded-lg flex items-center justify-center',
+                      'w-7 h-7 md:w-8 md:h-8 rounded-lg flex items-center justify-center shrink-0',
                       strategy.isSystem
                         ? 'bg-gradient-to-br from-purple-500 to-purple-600'
                         : 'bg-gradient-to-br from-blue-500 to-blue-600'
                     )}>
-                      <Bot className="h-4 w-4 text-white" />
+                      <Bot className="h-3.5 w-3.5 md:h-4 md:w-4 text-white" />
                     </div>
-                    <CardTitle className="text-lg">{strategy.name}</CardTitle>
+                    <CardTitle className="text-base md:text-lg truncate">{strategy.name}</CardTitle>
                   </div>
                   {currentStrategy?.id === strategy.id && (
-                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                      <Check className="h-3.5 w-3.5 text-white" />
+                    <div className="w-5 h-5 md:w-6 md:h-6 bg-blue-500 rounded-full flex items-center justify-center shrink-0">
+                      <Check className="h-3 w-3 md:h-3.5 md:w-3.5 text-white" />
                     </div>
                   )}
                 </div>
-                <CardDescription className="mt-2">
+                <CardDescription className="mt-1 md:mt-2 text-xs md:text-sm">
                   {strategy.description || '暂无描述'}
                 </CardDescription>
                 {strategy.isSystem && (
-                  <span className="inline-block mt-2 px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
+                  <span className="inline-block mt-1 md:mt-2 px-2 py-0.5 md:py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
                     系统预设
                   </span>
                 )}
               </CardHeader>
-              <CardContent className="pb-3">
-                <p className="text-sm text-gray-600 line-clamp-3">
+              <CardContent className="pb-2 md:pb-3">
+                <p className="text-xs md:text-sm text-gray-600 line-clamp-2 md:line-clamp-3">
                   {strategy.content}
                 </p>
               </CardContent>
               {!strategy.isSystem && (
-                <CardFooter className="pt-0 flex justify-end gap-2">
+                <CardFooter className="pt-0 flex justify-end gap-1 md:gap-2">
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-8"
+                    className="h-7 md:h-8 w-7 md:w-8 p-0"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleEditStrategy(strategy);
                     }}
                   >
-                    <Edit2 className="h-4 w-4" />
+                    <Edit2 className="h-3.5 w-3.5 md:h-4 md:w-4" />
                   </Button>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-8 text-red-500 hover:text-red-600 hover:bg-red-50"
+                    className="h-7 md:h-8 w-7 md:w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
                     onClick={(e) => {
                       e.stopPropagation();
                       deleteStrategy(strategy.id);
                     }}
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-3.5 w-3.5 md:h-4 md:w-4" />
                   </Button>
                 </CardFooter>
               )}
@@ -195,7 +214,7 @@ export function StrategyManager() {
       {/* 编辑模态框 */}
       {editingStrategy && (
         <Dialog open={!!editingStrategy} onOpenChange={() => setEditingStrategy(null)}>
-          <DialogContent className="sm:max-w-2xl">
+          <DialogContent className="w-[95vw] max-w-lg sm:max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>编辑策略</DialogTitle>
             </DialogHeader>
@@ -219,15 +238,15 @@ export function StrategyManager() {
                 <Textarea
                   value={editForm.content}
                   onChange={(e) => setEditForm({ ...editForm, content: e.target.value })}
-                  className="min-h-[200px]"
+                  className="min-h-[150px] md:min-h-[200px]"
                 />
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="ghost" onClick={handleCancelEdit}>
+            <DialogFooter className="flex-row gap-2 justify-end">
+              <Button variant="ghost" onClick={handleCancelEdit} className="text-sm">
                 取消
               </Button>
-              <Button className="glass-button" onClick={() => handleSaveEdit(editingStrategy)}>
+              <Button className="glass-button text-sm" onClick={() => handleSaveEdit(editingStrategy)}>
                 保存
               </Button>
             </DialogFooter>
