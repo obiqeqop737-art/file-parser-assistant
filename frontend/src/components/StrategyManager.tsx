@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Plus, Edit2, Trash2, Check, X, Bot, Menu } from 'lucide-react';
+import { Plus, Edit2, Trash2, Check, X, Bot } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,11 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
-interface StrategyManagerProps {
-  onMenuClick?: () => void;
-}
-
-export function StrategyManager({ onMenuClick }: StrategyManagerProps) {
+export function StrategyManager() {
   const {
     strategies,
     currentStrategy,
@@ -63,16 +59,6 @@ export function StrategyManager({ onMenuClick }: StrategyManagerProps) {
       {/* 头部 */}
       <div className="flex items-center justify-between mb-4 md:mb-6">
         <div className="flex items-center gap-3">
-          {isMobile && onMenuClick && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="shrink-0 h-9 w-9"
-              onClick={onMenuClick}
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-          )}
           <div>
             <h2 className="text-lg md:text-2xl font-bold text-gray-800">策略管理</h2>
             <p className="text-gray-500 text-sm mt-0.5 md:mt-1 hidden sm:block">管理您的文件解析策略</p>
