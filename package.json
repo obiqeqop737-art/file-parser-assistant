@@ -1,11 +1,5 @@
 {
   "name": "file-parser-assistant",
   "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "dev": "cd frontend && next dev",
-    "build": "cd frontend && next build",
-    "start": "cd frontend && next start"
-  },
-  "dependencies": {}
+  "private": true
 }
